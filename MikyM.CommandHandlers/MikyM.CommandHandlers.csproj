@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <PackageId>MikyM.CommandHandlers</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>Krzysztof Kupisz</Authors>
+    <PackageDescription>Command handler pattern that does not hide dependancies like Mediator does.</PackageDescription>
+    <RepositoryUrl>https://github.com/MikyM/MikyM.CommandHandlers</RepositoryUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Autofac" Version="6.3.0" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0" />
+    <PackageReference Include="MikyM.Autofac.Extensions" Version="1.0.5" />
+    <PackageReference Include="MikyM.Common.Utilities" Version="1.0.6" />
+  </ItemGroup>
+
+</Project>
