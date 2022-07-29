@@ -58,7 +58,7 @@ public static class DependancyInjectionExtensions
 
                 var registrationBuilder = builder.RegisterTypes(type).AsClosedInterfacesOf(typeof(ICommandHandler<>));
 
-                var scope = lifeAttr?.Scope ?? config.DefaultLifetime;
+                var scope = lifeAttr?.Scope ?? config.DefaultHandlerLifetime;
 
                 switch (scope)
                 {
@@ -152,7 +152,7 @@ public static class DependancyInjectionExtensions
 
                 var registrationBuilder = builder.RegisterTypes(type).AsClosedInterfacesOf(typeof(ICommandHandler<,>));
 
-                var scope = lifeAttr?.Scope ?? config.DefaultLifetime;
+                var scope = lifeAttr?.Scope ?? config.DefaultHandlerLifetime;
 
                 switch (scope)
                 {
@@ -242,7 +242,7 @@ public static class DependancyInjectionExtensions
 
             if (commandSet.Any())
             {
-                switch (config.DefaultLifetime)
+                switch (config.DefaultHandlerLifetime)
                 {
                     case Lifetime.SingleInstance:
                         builder.RegisterTypes(commandSet.ToArray())
@@ -274,7 +274,7 @@ public static class DependancyInjectionExtensions
             }
             if (commandResultSet.Any())
             {
-                switch (config.DefaultLifetime)
+                switch (config.DefaultHandlerLifetime)
                 {
                     case Lifetime.SingleInstance:
                         builder.RegisterTypes(commandResultSet.ToArray())
@@ -305,8 +305,28 @@ public static class DependancyInjectionExtensions
                 }
             }
         }
-
-        builder.RegisterType<CommandHandlerFactory>().As<ICommandHandlerFactory>().InstancePerLifetimeScope();
+        
+        switch (config.DefaultHandlerFactoryLifetime)
+        {
+            case Lifetime.SingleInstance:
+                builder.RegisterType<CommandHandlerFactory>().As<ICommandHandlerFactory>().SingleInstance();
+                break;
+            case Lifetime.InstancePerRequest:
+                builder.RegisterType<CommandHandlerFactory>().As<ICommandHandlerFactory>().InstancePerRequest();
+                break;
+            case Lifetime.InstancePerLifetimeScope:
+                builder.RegisterType<CommandHandlerFactory>().As<ICommandHandlerFactory>().InstancePerLifetimeScope();
+                break;
+            case Lifetime.InstancePerMatchingLifetimeScope:
+                throw new NotSupportedException();
+            case Lifetime.InstancePerDependancy:
+                builder.RegisterType<CommandHandlerFactory>().As<ICommandHandlerFactory>().InstancePerDependency();
+                break;
+            case Lifetime.InstancePerOwned:
+                throw new NotSupportedException();
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
 
         return builder;
     }

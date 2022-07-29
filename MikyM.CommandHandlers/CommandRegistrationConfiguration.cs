@@ -20,7 +20,11 @@ public sealed class CommandHandlerConfiguration : IOptions<CommandHandlerConfigu
     /// <summary>
     /// Gets or sets the default lifetime of command handlers.
     /// </summary>
-    public Lifetime DefaultLifetime { get; set; } = Lifetime.InstancePerLifetimeScope;
+    public Lifetime DefaultHandlerLifetime { get; set; } = Lifetime.InstancePerLifetimeScope;
+    /// <summary>
+    /// Gets or sets the default lifetime of <see cref="ICommandHandlerFactory"/>.
+    /// </summary>
+    public Lifetime DefaultHandlerFactoryLifetime { get; set; } = Lifetime.InstancePerLifetimeScope;
 
     /// <inheritdoc/>
     public CommandHandlerConfiguration Value => this;
