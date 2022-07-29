@@ -2,11 +2,12 @@
 using Microsoft.Extensions.Options;
 using MikyM.Autofac.Extensions;
 
-namespace MikyM.CommandHandlers.Helpers;
+namespace MikyM.CommandHandlers;
 
 /// <summary>
-/// Command handler options
+/// Command handler options.
 /// </summary>
+[PublicAPI]
 public sealed class CommandHandlerConfiguration : IOptions<CommandHandlerConfiguration>
 {
     internal CommandHandlerConfiguration(ContainerBuilder builder)
@@ -17,10 +18,10 @@ public sealed class CommandHandlerConfiguration : IOptions<CommandHandlerConfigu
     internal ContainerBuilder Builder { get; set; }
 
     /// <summary>
-    /// Gets or sets the default lifetime for base generic data services
+    /// Gets or sets the default lifetime of command handlers.
     /// </summary>
     public Lifetime DefaultLifetime { get; set; } = Lifetime.InstancePerLifetimeScope;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public CommandHandlerConfiguration Value => this;
 }

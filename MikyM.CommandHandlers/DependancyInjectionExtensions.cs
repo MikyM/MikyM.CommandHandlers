@@ -1,24 +1,27 @@
 ﻿using System.Reflection;
 using Autofac;
 using Autofac.Extras.DynamicProxy;
+using Autofac.Features.Decorators;
 using Microsoft.Extensions.Options;
 using MikyM.Autofac.Extensions;
 using MikyM.Autofac.Extensions.Attributes;
 using MikyM.Autofac.Extensions.Extensions;
+using MikyM.Common.Utilities.Extensions;
 
-namespace MikyM.CommandHandlers.Helpers;
+namespace MikyM.CommandHandlers;
 
 /// <summary>
-/// DI extensions for <see cref="ContainerBuilder"/>
+/// DI extensions for <see cref="ContainerBuilder"/>.
 /// </summary>
+[PublicAPI]
 public static class DependancyInjectionExtensions
 {
     /// <summary>
-    /// Registers command handlers with the <see cref="ContainerBuilder"/>
+    /// Registers command handlers with the <see cref="ContainerBuilder"/>.
     /// </summary>
-    /// <param name="builder">Current instance of <see cref="ContainerBuilder"/></param>
-    /// <param name="configuration">Optional <see cref="CommandHandlerConfiguration"/> configuration </param>
-    /// <returns>Current <see cref="ContainerBuilder"/> instance</returns>
+    /// <param name="builder">Current instance of <see cref="ContainerBuilder"/>.</param>
+    /// <param name="configuration">Optional <see cref="CommandHandlerConfiguration"/> configuration.</param>
+    /// <returns>Current <see cref="ContainerBuilder"/> instance.</returns>
     public static ContainerBuilder AddCommandHandlers(this ContainerBuilder builder, Action<CommandHandlerConfiguration>? configuration = null)
     {
         var config = new CommandHandlerConfiguration(builder);
@@ -306,5 +309,60 @@ public static class DependancyInjectionExtensions
         builder.RegisterType<CommandHandlerFactory>().As<ICommandHandlerFactory>().InstancePerLifetimeScope();
 
         return builder;
+    }
+
+    /// <summary>
+    /// Registers a decorator for command handlers with the <see cref="ContainerBuilder"/>.
+    /// </summary>
+    /// <param name="options">Options.</param>
+    /// <param name="condition">Condition to decide whether the decorator should be applied.</param>
+    /// <returns>Current <see cref="CommandHandlerConfiguration"/> instance.</returns>
+    public static CommandHandlerConfiguration AddDecorator<TDecorator>(this CommandHandlerConfiguration options, Func<IDecoratorContext, bool>? condition = null) where TDecorator : ICommandHandler
+    {
+        if (typeof(TDecorator).IsGenericType || typeof(TDecorator).IsGenericTypeDefinition)
+            throw new NotSupportedException("Given decorator type is a generic type, use AddGenericDecorator method instead");
+        if (typeof(TDecorator).IsAssignableToWithGenerics(typeof(ICommandHandler<>)))
+            options.Builder.RegisterDecorator(typeof(TDecorator), typeof(ICommandHandler<>), condition);
+        if (typeof(TDecorator).IsAssignableToWithGenerics(typeof(ICommandHandler<,>)))
+            options.Builder.RegisterDecorator(typeof(TDecorator), typeof(ICommandHandler<,>), condition);
+        else
+            throw new NotSupportedException("Given decorator type can't decorate any command handler");
+
+        return options;
+    }
+
+    /// <summary>
+    /// Registers a generic decorator for command handlers with the <see cref="ContainerBuilder"/>.
+    /// </summary>
+    /// <param name="options">Options.</param>
+    /// <param name="decoratorType">Decorator type.</param>
+    /// <param name="condition">Condition to decide whether the decorator should be applied.</param>
+    /// <returns>Current <see cref="CommandHandlerConfiguration"/> instance</returns>
+    public static CommandHandlerConfiguration AddGenericDecorator(this CommandHandlerConfiguration options, Type decoratorType, Func<IDecoratorContext, bool>? condition = null)
+    {
+        if (!decoratorType.IsGenericType && !decoratorType.IsGenericTypeDefinition)
+            throw new NotSupportedException("Given decorator type is not a generic type");
+        if (decoratorType.IsAssignableToWithGenerics(typeof(ICommandHandler<>)))
+            options.Builder.RegisterGenericDecorator(decoratorType, typeof(ICommandHandler<>), condition);
+        if (decoratorType.IsAssignableToWithGenerics(typeof(ICommandHandler<,>)))
+            options.Builder.RegisterGenericDecorator(decoratorType, typeof(ICommandHandler<,>), condition);
+        else
+            throw new NotSupportedException("Given decorator type can't decorate any command handler");
+
+        return options;
+    }
+
+    /// <summary>
+    /// Registers an adapter for command handlers with the <see cref="ContainerBuilder"/>.
+    /// </summary>
+    /// <param name="options">Options.</param>
+    /// <param name="adapter">Func that used to adapt service to another.</param>
+    /// <returns>Current <see cref="CommandHandlerConfiguration"/> instance.</returns>
+    public static CommandHandlerConfiguration AddAdapter<TAdapter, THandler>(
+        this CommandHandlerConfiguration options, Func<THandler, TAdapter> adapter)
+        where THandler : class, ICommandHandler where TAdapter : notnull
+    {
+        options.Builder.RegisterAdapter(adapter);
+        return options;
     }
 }
