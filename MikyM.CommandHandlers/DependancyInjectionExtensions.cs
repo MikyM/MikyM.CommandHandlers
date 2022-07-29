@@ -5,7 +5,6 @@ using Autofac.Features.Decorators;
 using Microsoft.Extensions.Options;
 using MikyM.Autofac.Extensions;
 using MikyM.Autofac.Extensions.Attributes;
-using MikyM.Autofac.Extensions.Extensions;
 using MikyM.Common.Utilities.Extensions;
 
 namespace MikyM.CommandHandlers;
@@ -71,7 +70,7 @@ public static class DependancyInjectionExtensions
                     case Lifetime.InstancePerLifetimeScope:
                         registrationBuilder = registrationBuilder.InstancePerLifetimeScope();
                         break;
-                    case Lifetime.InstancePerDependancy:
+                    case Lifetime.InstancePerDependency:
                         registrationBuilder = registrationBuilder.InstancePerDependency();
                         break;
                     case Lifetime.InstancePerMatchingLifetimeScope:
@@ -165,7 +164,7 @@ public static class DependancyInjectionExtensions
                     case Lifetime.InstancePerLifetimeScope:
                         registrationBuilder = registrationBuilder.InstancePerLifetimeScope();
                         break;
-                    case Lifetime.InstancePerDependancy:
+                    case Lifetime.InstancePerDependency:
                         registrationBuilder = registrationBuilder.InstancePerDependency();
                         break;
                     case Lifetime.InstancePerMatchingLifetimeScope:
@@ -261,7 +260,7 @@ public static class DependancyInjectionExtensions
                         break;
                     case Lifetime.InstancePerMatchingLifetimeScope:
                         throw new NotSupportedException();
-                    case Lifetime.InstancePerDependancy:
+                    case Lifetime.InstancePerDependency:
                         builder.RegisterTypes(commandSet.ToArray())
                             .AsClosedInterfacesOf(typeof(ICommandHandler<>))
                             .InstancePerDependency();
@@ -293,7 +292,7 @@ public static class DependancyInjectionExtensions
                         break;
                     case Lifetime.InstancePerMatchingLifetimeScope:
                         throw new NotSupportedException();
-                    case Lifetime.InstancePerDependancy:
+                    case Lifetime.InstancePerDependency:
                         builder.RegisterTypes(commandResultSet.ToArray())
                             .AsClosedInterfacesOf(typeof(ICommandHandler<,>))
                             .InstancePerDependency();
@@ -319,7 +318,7 @@ public static class DependancyInjectionExtensions
                 break;
             case Lifetime.InstancePerMatchingLifetimeScope:
                 throw new NotSupportedException();
-            case Lifetime.InstancePerDependancy:
+            case Lifetime.InstancePerDependency:
                 builder.RegisterType<CommandHandlerFactory>().As<ICommandHandlerFactory>().InstancePerDependency();
                 break;
             case Lifetime.InstancePerOwned:
