@@ -3,10 +3,10 @@
 namespace MikyM.CommandHandlers;
 
 /// <summary>
-/// Defines a base command handler. <b>Used ONLY as a marker interface.</b>
+/// Defines a base command handler. <b>Shouldn't be implemented manually, implement <see cref="ICommandHandler{TCommand}"/> or <see cref="ICommandHandler{TCommand,TResult}"/> instead.</b>
 /// </summary>
 [PublicAPI]
-public interface ICommandHandler
+public interface ICommandHandlerBase
 {
 }
 
@@ -15,7 +15,7 @@ public interface ICommandHandler
 /// </summary>
 /// <typeparam name="TCommand">Command type implementing <see cref="ICommand"/>.</typeparam>
 [PublicAPI]
-public interface ICommandHandler<in TCommand> : ICommandHandler where TCommand : class, ICommand
+public interface ICommandHandler<in TCommand> : ICommandHandlerBase where TCommand : class, ICommand
 {
     /// <summary>
     /// Handles the given command.
@@ -31,7 +31,7 @@ public interface ICommandHandler<in TCommand> : ICommandHandler where TCommand :
 /// <typeparam name="TCommand">Command type implementing <see cref="ICommand{TResult}"/>,</typeparam>
 /// <typeparam name="TResult">Result of the <see cref="ICommand{TResult}"/>,</typeparam>
 [PublicAPI]
-public interface ICommandHandler<in TCommand, TResult> : ICommandHandler where TCommand : class, ICommand<TResult>
+public interface ICommandHandler<in TCommand, TResult> : ICommandHandlerBase where TCommand : class, ICommand<TResult>
 {
     /// <summary>
     /// Handles the given command,

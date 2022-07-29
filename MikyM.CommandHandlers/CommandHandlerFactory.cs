@@ -3,30 +3,30 @@
 namespace MikyM.CommandHandlers;
 
 /// <summary>
-/// A factory for <see cref="ICommandHandler"/>.
+/// A factory for <see cref="ICommandHandlerBase"/>.
 /// </summary>
 [PublicAPI]
 public interface ICommandHandlerFactory
 {
     /// <summary>
-    /// Gets an <see cref="ICommandHandler"/> of a given type.
+    /// Gets an <see cref="ICommandHandlerBase"/> of a given type.
     /// </summary>
-    /// <typeparam name="TCommandHandler">Type of the <see cref="ICommandHandler"/> to get.</typeparam>
-    /// <returns>Wanted <see cref="ICommandHandler"/>.</returns>
-    TCommandHandler GetHandler<TCommandHandler>() where TCommandHandler : class, ICommandHandler;
+    /// <typeparam name="TCommandHandler">Type of the <see cref="ICommandHandlerBase"/> to get.</typeparam>
+    /// <returns>Wanted <see cref="ICommandHandlerBase"/>.</returns>
+    TCommandHandler GetHandler<TCommandHandler>() where TCommandHandler : class, ICommandHandlerBase;
 
     /// <summary>
-    /// Gets an <see cref="ICommandHandler"/> for a given <see cref="ICommand{TResult}"/>.
+    /// Gets an <see cref="ICommandHandlerBase"/> for a given <see cref="ICommand{TResult}"/>.
     /// </summary>
     /// <typeparam name="TCommand">Type of the <see cref="ICommand{TResult}"/>.</typeparam>
     /// <typeparam name="TResult">Type of the command result.</typeparam>
-    /// <returns>Wanted <see cref="ICommandHandler"/>.</returns>
+    /// <returns>Wanted <see cref="ICommandHandlerBase"/>.</returns>
     ICommandHandler<TCommand, TResult> GetHandlerFor<TCommand, TResult>() where TCommand : class, ICommand<TResult>;
     /// <summary>
-    /// Gets an <see cref="ICommandHandler"/> for a given <see cref="ICommand"/>.
+    /// Gets an <see cref="ICommandHandlerBase"/> for a given <see cref="ICommand"/>.
     /// </summary>
     /// <typeparam name="TCommand">Type of the <see cref="ICommand"/>.</typeparam>
-    /// <returns>Wanted <see cref="ICommandHandler"/>.</returns>
+    /// <returns>Wanted <see cref="ICommandHandlerBase"/>.</returns>
     ICommandHandler<TCommand> GetHandlerFor<TCommand>() where TCommand : class, ICommand;
 }
 
@@ -45,7 +45,7 @@ public class CommandHandlerFactory : ICommandHandlerFactory
     }
 
     /// <inheritdoc />
-    public TCommandHandler GetHandler<TCommandHandler>() where TCommandHandler : class, ICommandHandler
+    public TCommandHandler GetHandler<TCommandHandler>() where TCommandHandler : class, ICommandHandlerBase
     {
         if (!typeof(TCommandHandler).IsInterface)
             throw new ArgumentException("Due to Autofac limitations you must use interfaces");

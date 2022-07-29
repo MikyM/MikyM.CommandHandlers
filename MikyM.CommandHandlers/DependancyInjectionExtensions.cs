@@ -337,7 +337,7 @@ public static class DependancyInjectionExtensions
     /// <param name="options">Options.</param>
     /// <param name="condition">Condition to decide whether the decorator should be applied.</param>
     /// <returns>Current <see cref="CommandHandlerConfiguration"/> instance.</returns>
-    public static CommandHandlerConfiguration AddDecorator<TDecorator>(this CommandHandlerConfiguration options, Func<IDecoratorContext, bool>? condition = null) where TDecorator : ICommandHandler
+    public static CommandHandlerConfiguration AddDecorator<TDecorator>(this CommandHandlerConfiguration options, Func<IDecoratorContext, bool>? condition = null) where TDecorator : ICommandHandlerBase
     {
         if (typeof(TDecorator).IsGenericType || typeof(TDecorator).IsGenericTypeDefinition)
             throw new NotSupportedException("Given decorator type is a generic type, use AddGenericDecorator method instead");
@@ -380,7 +380,7 @@ public static class DependancyInjectionExtensions
     /// <returns>Current <see cref="CommandHandlerConfiguration"/> instance.</returns>
     public static CommandHandlerConfiguration AddAdapter<TAdapter, THandler>(
         this CommandHandlerConfiguration options, Func<THandler, TAdapter> adapter)
-        where THandler : class, ICommandHandler where TAdapter : notnull
+        where THandler : class, ICommandHandlerBase where TAdapter : notnull
     {
         options.Builder.RegisterAdapter(adapter);
         return options;
