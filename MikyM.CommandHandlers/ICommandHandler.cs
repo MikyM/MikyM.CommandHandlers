@@ -21,8 +21,9 @@ public interface ICommandHandler<in TCommand> : ICommandHandlerBase where TComma
     /// Handles the given command.
     /// </summary>
     /// <param name="command">Command to handle.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>The <see cref="Result"/> of the operation.</returns>
-    Task<Result> HandleAsync(TCommand command);
+    Task<Result> HandleAsync(TCommand command, CancellationToken cancellationToken = default);
 }
 
 /// <summary>
@@ -34,9 +35,10 @@ public interface ICommandHandler<in TCommand> : ICommandHandlerBase where TComma
 public interface ICommandHandler<in TCommand, TResult> : ICommandHandlerBase where TCommand : class, ICommand<TResult>
 {
     /// <summary>
-    /// Handles the given command,
+    /// Handles the given command.
     /// </summary>
-    /// <param name="command">Command to handle,</param>
-    /// <returns>The <see cref="Result"/> of the operation containing a <typeparamref name="TResult"/> if any,</returns>
-    Task<Result<TResult>> HandleAsync(TCommand command);
+    /// <param name="command">Command to handle.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>The <see cref="Result"/> of the operation containing a <typeparamref name="TResult"/> if any.</returns>
+    Task<Result<TResult>> HandleAsync(TCommand command, CancellationToken cancellationToken = default);
 }

@@ -48,7 +48,7 @@ public class CommandHandlerFactory : ICommandHandlerFactory
     public TCommandHandler GetHandler<TCommandHandler>() where TCommandHandler : class, ICommandHandlerBase
     {
         if (!typeof(TCommandHandler).IsInterface)
-            throw new ArgumentException("Due to Autofac limitations you must use interfaces");
+            throw new ArgumentException("Due to Autofac limitations you must use open generic interfaces");
 
         return _lifetimeScope.Resolve<TCommandHandler>();
     }
